@@ -123,6 +123,48 @@ public class UsuarioDAO {
 
         return linhasAfetadas > 0;
     }
+    public UsuarioVO getUsuario(UsuarioVO usuarioVO) {
+        UsuarioVO usuarioRetornado = null;
+
+        String comandoSQL = "SELECT * FROM usuario WHERE email = ?";
+
+        try (PreparedStatement comando = ConexaoBD.getConexaoBD().prepareStatement(comandoSQL)) {
+            comando.setString(1, usuarioVO.getEmail());
+            ResultSet resultado = comando.executeQuery();
+
+            if (resultado.next()) {
+                usuarioRetornado = new UsuarioVO();
+                usuarioRetornado.setEmail(resultado.getString("email"));
+                usuarioRetornado.setNome(resultado.getString("nome"));
+
+                // Descriptografa a senha recuperada do banco de dados
+                String senhaCriptografada = resultado.getString("senha");
+                String senhaDescriptografada = descriptografar(senhaCriptografada);
+                usuarioRetornado.setSenha(senhaDescriptografada);
+            }
+
+            resultado.close();
+        } catch (SQLException e) {
+            System.err.println("Erro ao obter usuário do banco de dados.");
+            e.printStackTrace();
+        }
+
+        return usuarioRetornado;
+    }
+    public String descriptografar(String senhaCriptografada) {
+        try {
+            SecretKey chaveSecreta = new SecretKeySpec(CHAVE.getBytes(), "AES");
+            Cipher cifra = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cifra.init(Cipher.DECRYPT_MODE, chaveSecreta);
+
+            byte[] textoDescriptografado = cifra.doFinal(Base64.getDecoder().decode(senhaCriptografada));
+
+            return new String(textoDescriptografado);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     public boolean delUsuario(UsuarioVO usuarioVO) {
         int linhasAfetadas = 0;
 

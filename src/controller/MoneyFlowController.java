@@ -94,7 +94,7 @@ public class MoneyFlowController {
 	}
 	public boolean delUsuario(UsuarioVO usuarioVO) {return usuarioDAO.delUsuario(usuarioVO);}
 	public boolean alterUsuario(UsuarioVO usuarioVO) { return usuarioDAO.alterUsuario(usuarioVO);}
-
+	public UsuarioVO getUsuario(UsuarioVO usuarioVO) {return usuarioDAO.getUsuario(usuarioVO);}
 	public ArrayList<CategoriaVO> getCategorias(String emailUsuario, String pesquisa, String filtro) {
 		return categoriaDAO.getCategoria(emailUsuario, pesquisa, filtro);
 	}

@@ -37,7 +37,7 @@ public class GerenciamentoPerfilVisao extends JInternalFrame {
 
         this.logo = new ImageIcon("icons/logo_app.png");
         this.controller = controller;
-        this.usuarioVO = usuarioVO;
+        this.usuarioVO = controller.getUsuario(usuarioVO);
         this.desktop = desktop;
 
         try {
@@ -73,6 +73,10 @@ public class GerenciamentoPerfilVisao extends JInternalFrame {
                 excluir();
             }
         });
+        if (usuarioVO != null) {
+            textNome.setText(this.usuarioVO.getNome());
+            textSenha.setText(this.usuarioVO.getSenha());
+        }
 
     }
     private void inicializaComponentes() {

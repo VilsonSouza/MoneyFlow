@@ -11,6 +11,10 @@ public class UsuarioVO {
         this.nome = nome;
     }
 
+    public UsuarioVO() {
+
+    }
+
     public String getEmail() {
         return email;
     }
