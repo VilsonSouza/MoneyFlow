@@ -23,7 +23,7 @@ public class ConexaoBD {
 //				Class.forName("org.hsqldb.jdbcDriver"); //carrega o driver
 				Class.forName("com.mysql.cj.jdbc.Driver"); //carrega o driver
 					
-				conexao = DriverManager.getConnection("jdbc:mysql://localhost/moneyflow2.0","root","");
+				conexao = DriverManager.getConnection("jdbc:mysql://localhost/moneyflow","root","");
 //				conexao = DriverManager.getConnection("jdbc:mysql://localhost/moneyflow?useTimezone=true&serverTimezone=UTC","root","");
 				
 			}		

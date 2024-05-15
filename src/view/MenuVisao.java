@@ -34,6 +34,7 @@ public class MenuVisao extends JFrame {
 	private JMenuItem categoriaItem;
 	private JMenuItem metaItem;
 	private JMenuItem finalizarItem;
+	private JMenuItem deslogarItem;
 	private JMenuItem calculadoraFinanceiraItem;
 
 	private JMenuItem relatorioAnualItem;
@@ -43,14 +44,17 @@ public class MenuVisao extends JFrame {
 	private Color backgroundTelas;
 	
 	private UsuarioVO usuarioVO;
+	
+	private ImageIcon logo;
 
-	public MenuVisao(MoneyFlowController controller, UsuarioVO usuarioVO) {
+	public MenuVisao(MoneyFlowController controller, UsuarioVO usuarioVO, ImageIcon logo) {
 		// Construtor
 
 		super("MoneyFlow");
 		
 		this.controller = controller;
 		this.usuarioVO = usuarioVO;
+		this.logo = logo;
 
 		try {
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel"); // Java Swing Nimbus
@@ -76,6 +80,8 @@ public class MenuVisao extends JFrame {
 		relatoriosMenu.add(new JMenuItem("Relatório 4"));
 		
 		aplicacaoMenu.add(perfilItem);
+		aplicacaoMenu.addSeparator();
+		aplicacaoMenu.add(deslogarItem);
 		aplicacaoMenu.addSeparator();
 		aplicacaoMenu.add(finalizarItem);
 
@@ -126,11 +132,23 @@ public class MenuVisao extends JFrame {
 			}
 		});
 		
+		deslogarItem.addActionListener(new ActionListener() { // classe interna anonima
+			public void actionPerformed(ActionEvent event) {
+				deslogar();
+			}
+		});
+		
 		relatorioAnualItem.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gerarRelatorioAnual();
+			}
+		});
+		
+		calculadoraFinanceiraItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				calculadoraFinanceira();
 			}
 		});
 	}
@@ -149,6 +167,7 @@ public class MenuVisao extends JFrame {
 		categoriaItem = new JMenuItem("Gerenciar Categorias");
 		perfilItem = new JMenuItem("Configurações de Perfil");
 		finalizarItem = new JMenuItem("Finalizar Programa");
+		deslogarItem = new JMenuItem("Deslogar");
 		metaItem = new JMenuItem("Gerenciar Metas");
 		calculadoraFinanceiraItem = new JMenuItem("Calculadora Financeira");
 		
@@ -236,6 +255,29 @@ public class MenuVisao extends JFrame {
 		desktop.add(g);
 		g.setVisible(true);
 
+	}
+	
+	private void calculadoraFinanceira() {
+		CalculadoraVisao c = new CalculadoraVisao();
+		c.setBounds(0, 0, 400, 250);
+		c.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+		c.getContentPane().setBackground(backgroundTelas);
+
+		desktop.add(c);
+		c.setPosicao();
+		c.setVisible(true);
+	}
+	
+	private void deslogar() {
+		this.dispose();
+		
+		LoginVisao l = new LoginVisao(logo, controller, null);
+		l.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		l.setBounds(100, 100, 320, 450);
+		l.setIconImage(logo.getImage());
+		l.setLocationRelativeTo(null);
+		l.setVisible(true);
 	}
 
 	private void fechar() {

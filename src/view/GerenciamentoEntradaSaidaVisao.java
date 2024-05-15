@@ -1,7 +1,9 @@
 package view;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -10,6 +12,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -25,7 +29,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -59,9 +68,11 @@ public class GerenciamentoEntradaSaidaVisao extends JInternalFrame {
 	private JDateChooser calendarDe;
 	private JDateChooser calendarAte;
 
-	private DefaultTableModel tableModel;
+	private MovimentacaoModelListener movimentacaoModelListener;
 
-	private JTable table;
+	private TableRowSorter tableSorter;
+
+	private Tabela table;
 
 	private JScrollPane barraRolagem;
 
@@ -159,7 +170,7 @@ public class GerenciamentoEntradaSaidaVisao extends JInternalFrame {
 				buttonAlterarSaida.setEnabled(false);
 				buttonDelEntrada.setEnabled(false);
 				buttonDelSaida.setEnabled(false);
-				
+
 				if (table.getSelectedRowCount() == 1) {
 					if (quadroVO.getMovimentacoes().get(table.getSelectedRow()).isEntrada()) {
 						buttonAlterarEntrada.setEnabled(true);
@@ -191,8 +202,12 @@ public class GerenciamentoEntradaSaidaVisao extends JInternalFrame {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				// TODO Auto-generated method stub
-
+				if(e.getClickCount() == 2) {
+					if(quadroVO.getMovimentacoes().get(table.getSelectedRow()).isEntrada())
+						alterarEntrada();
+					else
+						alterarSaida();
+				}
 			}
 		});
 
@@ -215,55 +230,49 @@ public class GerenciamentoEntradaSaidaVisao extends JInternalFrame {
 				atualizaTabela();
 			}
 		});
-		
+
 		calendarAte.addPropertyChangeListener("date", new PropertyChangeListener() {
-		    @Override
-		    public void propertyChange(PropertyChangeEvent evt) {
-		        if ("date".equals(evt.getPropertyName())) {
-		            atualizaTabela();
-		        }
-		    }
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if ("date".equals(evt.getPropertyName())) {
+					atualizaTabela();
+				}
+			}
 		});
-		
+
 		calendarDe.addPropertyChangeListener("date", new PropertyChangeListener() {
-		    @Override
-		    public void propertyChange(PropertyChangeEvent evt) {
-		        if ("date".equals(evt.getPropertyName())) {
-		            atualizaTabela();
-		        }
-		    }
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if ("date".equals(evt.getPropertyName())) {
+					atualizaTabela();
+				}
+			}
 		});
-		
-		
+
 	}
 
 	// metodo responsavel por criar a JTable
 	private void criaJTable() {
 		// inicializa a JTable
-		table = new JTable();
+		table = new Tabela(movimentacaoModelListener);
 
-		// mas a JTable precisa de algo para manipular seus dados(inserir linha,
-		// excluir...)
-		tableModel = new DefaultTableModel() {
-			// por padrao o DefaultTableModel permite fazer alteracoes na JTable, por isso
-			// precisamos
-			// sobrecarregar seu metodo dizendo que nenhuma das linhas podera ser alterada
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-		};
+		movimentacaoModelListener = new MovimentacaoModelListener();
 
 		// definindo que o tableModel seta responsavel por manipular os dados da JTable
-		table.setModel(tableModel);
+		table.setModel(movimentacaoModelListener);
 
-		// adicionando todas as colunas da tabela
-		tableModel.addColumn("Código");
-		tableModel.addColumn("Descrição");
-		tableModel.addColumn("Valor (R$)");
-		tableModel.addColumn("Data");
+		table.setRowHeight(23);
 
-		// setando o numero de linhas da JTable inicialmente como 0
-		tableModel.setNumRows(0);
+		tableSorter = new TableRowSorter(movimentacaoModelListener);
+		table.setRowSorter(tableSorter);
+
+		table.getColumnModel().getColumn(0).setPreferredWidth(5);
+		table.getColumnModel().getColumn(1).setPreferredWidth(2000);
+		table.getColumnModel().getColumn(2).setPreferredWidth(2000);
+		table.getColumnModel().getColumn(3).setPreferredWidth(2000);
+		table.getColumnModel().getColumn(4).setPreferredWidth(2000);
+
+		table.setDefaultRenderer(Object.class, new TableRenderer());
 	}
 
 	// metodo responsavel por inicializar os componentes
@@ -311,14 +320,16 @@ public class GerenciamentoEntradaSaidaVisao extends JInternalFrame {
 		calendarDe = new JDateChooser();
 		calendarAte = new JDateChooser();
 
-		calendarAte.setDate(new Date());
-
 		Calendar cal = Calendar.getInstance();
 
 		// Subtrai um mês da data atual
 		cal.add(Calendar.MONTH, -1);
 
 		calendarDe.setDate(cal.getTime());
+
+		cal.add(Calendar.MONTH, 2);
+		
+		calendarAte.setDate(cal.getTime());
 	}
 
 	// metodo responsavel por montar o painel
@@ -379,18 +390,18 @@ public class GerenciamentoEntradaSaidaVisao extends JInternalFrame {
 		Date de = calendarDe.getDate();
 		Date ate = calendarAte.getDate();
 
-		tableModel.setNumRows(0);
+		movimentacaoModelListener.limpaDados();
 
 		buttonAlterarEntrada.setEnabled(false);
 		buttonAlterarSaida.setEnabled(false);
 		buttonDelEntrada.setEnabled(false);
 		buttonDelSaida.setEnabled(false);
 
-		quadroVO.setMovimentacoes(controller.getMovimentacoes(quadroVO.getCodigo(), emailUsuario, pesquisa, filtro, de, ate));
+		quadroVO.setMovimentacoes(
+				controller.getMovimentacoes(quadroVO.getCodigo(), emailUsuario, pesquisa, filtro, de, ate));
 
 		for (MovimentacaoVO m : quadroVO.getMovimentacoes()) {
-			tableModel.addRow(
-					new Object[] { m.getCodigo(), m.getDescricao(), m.getValor_total(), m.getDataOcorrencia() });
+			movimentacaoModelListener.addRow(m);
 		}
 	}
 
@@ -421,17 +432,17 @@ public class GerenciamentoEntradaSaidaVisao extends JInternalFrame {
 	private void alterarEntrada() {
 		if (controller.getQtdBancos(emailUsuario) != 0) {
 			if (controller.getQtCategorias(emailUsuario) != 0) {
-					AlterarEntradaVisao a = new AlterarEntradaVisao(GerenciamentoEntradaSaidaVisao.this, controller,
-							quadroVO.getMovimentacoes().get(table.getSelectedRow()), quadroVO.getCodigo(), emailUsuario);
-					a.setBounds(0, 0, 350, 600);
-					a.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					a.setClosable(true);
-					a.getContentPane().setBackground(backgroundTelas);
-					this.setVisible(false);
+				AlterarEntradaVisao a = new AlterarEntradaVisao(GerenciamentoEntradaSaidaVisao.this, controller,
+						quadroVO.getMovimentacoes().get(table.getSelectedRow()), quadroVO.getCodigo(), emailUsuario);
+				a.setBounds(0, 0, 350, 600);
+				a.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				a.setClosable(true);
+				a.getContentPane().setBackground(backgroundTelas);
+				this.setVisible(false);
 
-					desktop.add(a);
-					a.setVisible(true);
-					a.setPosicao();
+				desktop.add(a);
+				a.setVisible(true);
+				a.setPosicao();
 			} else {
 				JOptionPane.showMessageDialog(GerenciamentoEntradaSaidaVisao.this,
 						"É necessário ao menos uma Categoria cadastrada", "", JOptionPane.WARNING_MESSAGE);
@@ -450,9 +461,9 @@ public class GerenciamentoEntradaSaidaVisao extends JInternalFrame {
 			if (controller.delMovimentacao(quadroVO.getMovimentacoes().get(table.getSelectedRow()).getCodigo())) {
 				JOptionPane.showMessageDialog(GerenciamentoEntradaSaidaVisao.this, "Entrada deletada com sucesso", "",
 						JOptionPane.INFORMATION_MESSAGE);
-				
+
 				atualizaValores();
-			}else {
+			} else {
 				JOptionPane.showMessageDialog(GerenciamentoEntradaSaidaVisao.this, "Erro ao deletar Entrada", "",
 						JOptionPane.ERROR_MESSAGE);
 			}
@@ -517,10 +528,9 @@ public class GerenciamentoEntradaSaidaVisao extends JInternalFrame {
 			if (controller.delMovimentacao(quadroVO.getMovimentacoes().get(table.getSelectedRow()).getCodigo())) {
 				JOptionPane.showMessageDialog(GerenciamentoEntradaSaidaVisao.this, "Saída deletada com sucesso", "",
 						JOptionPane.INFORMATION_MESSAGE);
-				
+
 				atualizaValores();
-			}
-			else {
+			} else {
 				JOptionPane.showMessageDialog(GerenciamentoEntradaSaidaVisao.this, "Erro ao deletar Saída", "",
 						JOptionPane.ERROR_MESSAGE);
 			}
@@ -528,7 +538,7 @@ public class GerenciamentoEntradaSaidaVisao extends JInternalFrame {
 
 		atualizaTabela();
 	}
-	
+
 	public void atualizaValores() {
 		controller.atualizaValoresBanco(emailUsuario);
 		controller.atualizaValoresMeta(emailUsuario);
@@ -544,5 +554,175 @@ public class GerenciamentoEntradaSaidaVisao extends JInternalFrame {
 	public void setPosicao() {
 		Dimension d = this.getDesktopPane().getSize();
 		this.setLocation((d.width - this.getSize().width) / 2, (d.height - this.getSize().height) / 2);
+	}
+
+	private static class RendererData extends DefaultTableCellRenderer {
+		private static final long serialVersionUID = 1L;
+
+		public RendererData() {
+			super();
+		}
+
+		@Override
+		protected void setValue(Object o) {
+			String dataFormatada = "";
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			dataFormatada = sdf.format(o);
+			super.setValue(dataFormatada);
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+
+			int linha = row;
+
+			Component comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+			if (linha % 2 == 0)
+				comp.setBackground(Color.WHITE);
+			else
+				comp.setBackground(new Color(242, 242, 242));
+
+			comp.setForeground(Color.RED);
+			comp.setFont(new Font("Arial", Font.BOLD, 12));
+
+			if (isSelected) {
+				comp.setBackground(new Color(57, 105, 138));
+				comp.setForeground(Color.WHITE);
+				comp.setFont(new Font("Arial", Font.BOLD, 12));
+			}
+
+			return comp;
+		}
+	}
+
+	private static class Tabela extends JTable {
+		private static final long serialVersionUID = 1L;
+		private RendererData formatadorData = new RendererData();
+
+		public Tabela(TableModel modeloDaTabela) {
+			super(modeloDaTabela);
+		}
+
+		@Override
+		public TableCellRenderer getCellRenderer(int row, int column) {
+			if (column == 4)
+				return formatadorData;
+			return super.getCellRenderer(row, column);
+		}
+	}
+
+	public class TableRenderer extends DefaultTableCellRenderer {
+
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+
+			int linha = row;
+
+			row = tableSorter.convertRowIndexToModel(row);
+
+			Component comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+			if (column == 0) {
+				Boolean status = quadroVO.getMovimentacoes().get(row).isEntrada();
+
+				if (status)
+					comp.setBackground(new Color(91, 234, 153));
+				else
+					comp.setBackground(new Color(255, 10, 10));
+
+			} else {
+				if (linha % 2 == 0)
+					comp.setBackground(Color.WHITE);
+				else
+					comp.setBackground(new Color(242, 242, 242));
+
+				comp.setForeground(Color.BLACK);
+				comp.setFont(new Font("Arial", Font.PLAIN, 12));
+
+				if (isSelected) {
+					comp.setBackground(new Color(57, 105, 138));
+					comp.setForeground(Color.WHITE);
+					comp.setFont(new Font("Arial", Font.BOLD, 12));
+				}
+			}
+
+			return comp;
+		}
+	}
+
+	public class MovimentacaoModelListener extends AbstractTableModel {
+
+		public ArrayList<MovimentacaoVO> dados;
+		private Object[] colunas = { "", "Código", "Descrição", "Valor(R$)", "Data" };
+
+		public MovimentacaoModelListener() {
+			dados = new ArrayList<MovimentacaoVO>();
+		}
+
+		public void addRow(MovimentacaoVO m) {
+			this.dados.add(m);
+			this.fireTableDataChanged();
+		}
+
+		public String getColumnName(int num) {
+			return this.colunas[num].toString();
+		}
+
+		public int getRowCount() {
+			return dados.size();
+		}
+
+		public int getColumnCount() {
+			return colunas.length;
+		}
+
+		public Class getColumnClass(int coluna) {
+			if (coluna == 4)
+				return Date.class;
+			else if (coluna == 3)
+				return Float.class;
+			else if (coluna == 1)
+					return Integer.class;
+			else
+				return String.class;
+		}
+
+		public Object getValueAt(int linha, int coluna) {
+			switch (coluna) {
+			case 0:
+				return "";
+			case 1:
+				return dados.get(linha).getCodigo();
+			case 2:
+				return dados.get(linha).getDescricao();
+			case 3:
+				return dados.get(linha).getValor_total();
+			case 4:
+				return dados.get(linha).getDataOcorrencia();
+			}
+			return null;
+		}
+
+		public void removeRow(int linha) {
+			this.dados.remove(linha);
+			this.fireTableRowsDeleted(linha, linha);
+		}
+
+		public MovimentacaoVO get(int linha) {
+			return this.dados.get(linha);
+		}
+
+		public boolean isCellEditable(int linha, int coluna) {
+			return false;
+		}
+
+		public void limpaDados() {
+			dados.clear();
+
+			this.fireTableDataChanged();
+		}
 	}
 }

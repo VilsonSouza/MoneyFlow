@@ -166,4 +166,12 @@ public class MoneyFlowController {
 	public ArrayList<RelatorioAnualVO> getRelatorioAnual(String emailUsuario) {
 		return usuarioDAO.getRelatorioAnual(emailUsuario);
 	}
+
+	public boolean enviarEmail(String emailReceiptient, String emailSubject, String emailBody) {
+		return usuarioDAO.enviarEmail(emailReceiptient, emailSubject, emailBody);
+	}
+
+	public String enviarConfirmacaoCadastro(String email, String nome) {
+		return usuarioDAO.enviarConfirmacaoCadastro(email, nome);
+	}
 }

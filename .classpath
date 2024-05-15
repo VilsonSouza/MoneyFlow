@@ -23,5 +23,7 @@
 	<classpathentry kind="lib" path="lib/grafico/orsonpdf-1.6-eval.jar"/>
 	<classpathentry kind="lib" path="lib/grafico/servlet.jar"/>
 	<classpathentry kind="lib" path="lib/grafico/swtgraphics2d.jar"/>
+	<classpathentry kind="lib" path="lib/javax.mail.jar"/>
+	<classpathentry kind="lib" path="lib/activation-1.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

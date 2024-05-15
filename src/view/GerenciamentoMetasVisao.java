@@ -1,7 +1,9 @@
 package view;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -22,7 +24,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -30,6 +34,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import controller.MoneyFlowController;
 import model.vo.MetaVO;
+import view.GerenciamentoCategoriaVisao.TableRenderer;
 
 public class GerenciamentoMetasVisao extends JInternalFrame{
 	
@@ -56,6 +61,8 @@ public class GerenciamentoMetasVisao extends JInternalFrame{
 	private JScrollPane barraRolagem;
 	
 	private JDesktopPane desktop;
+	
+	private TableRowSorter tableSorter;
 	
 	private Color backgroundTelas;
 	
@@ -145,8 +152,8 @@ public class GerenciamentoMetasVisao extends JInternalFrame{
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
+				if(e.getClickCount() == 2)
+					alterarMeta();
 			}
 		});
 		
@@ -184,6 +191,16 @@ public class GerenciamentoMetasVisao extends JInternalFrame{
 				return false;
 			}
 		};
+		
+		table.setDefaultRenderer(Object.class, new TableRenderer());
+
+		table.setRowHeight(23);
+
+		tableSorter = new TableRowSorter(tableModel);
+		table.setRowSorter(tableSorter);
+
+		table.getColumnModel().getSelectionModel()
+				.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
 		//definindo que o tableModel seta responsavel por manipular os dados da JTable
 		table.setModel(tableModel);
@@ -330,5 +347,30 @@ public class GerenciamentoMetasVisao extends JInternalFrame{
 	public void setPosicao() {
 		Dimension d = this.getDesktopPane().getSize();
 		this.setLocation((d.width - this.getSize().width) / 2, (d.height - this.getSize().height) / 2);
+	}
+	
+	public class TableRenderer extends DefaultTableCellRenderer {
+
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			Component comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+			if (row % 2 == 0)
+				comp.setBackground(Color.WHITE);
+			else
+				comp.setBackground(new Color(242, 242, 242));
+
+			comp.setForeground(Color.BLACK);
+			comp.setFont(new Font("Arial", Font.PLAIN, 12));
+
+			if (isSelected) {
+				comp.setBackground(new Color(57, 105, 138));
+				comp.setForeground(Color.WHITE);
+				comp.setFont(new Font("Arial", Font.BOLD, 12));
+			}
+
+			return comp;
+		}
 	}
 }
