@@ -51,7 +51,7 @@ public class LoginVisao extends JFrame {
 	private ImageIcon logo;
 
 	private UsuarioVO usuarioVO;
-	
+
 	private Color backgroundTelas;
 
 	public LoginVisao(ImageIcon logo, MoneyFlowController controller, Color backgroundTelas, UsuarioVO usuarioVO) {
@@ -185,7 +185,7 @@ public class LoginVisao extends JFrame {
 
 			}
 		});
-		
+
 		buttonLogin.addMouseListener(new MouseListener() {
 
 			public void mouseEntered(MouseEvent e) {
@@ -345,8 +345,15 @@ public class LoginVisao extends JFrame {
 	}
 
 	private void esqueceuSenha() {
-		JOptionPane.showMessageDialog(LoginVisao.this, "Senha alterada com sucesso", "",
-				JOptionPane.INFORMATION_MESSAGE);
+		RedefinirSenhaVisao r = new RedefinirSenhaVisao(LoginVisao.this, controller);
+		r.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		r.setBounds(100, 100, 550, 500);
+		r.setIconImage(logo.getImage());
+		r.setLocationRelativeTo(null);
+		r.getContentPane().setBackground(backgroundTelas);
+
+		this.dispose();
+		r.setVisible(true);
 	}
 
 	private void cadastro() {

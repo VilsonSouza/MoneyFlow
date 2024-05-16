@@ -188,6 +188,9 @@ public class GerenciamentoPerfilVisao extends JInternalFrame {
 						loginVisao.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 						loginVisao.setBounds(100, 100, 570, 500);
 						loginVisao.setIconImage(logo.getImage());
+						loginVisao.getContentPane().setBackground(backgroundTelas);
+						loginVisao.setLocationRelativeTo(null);
+						
 						loginVisao.setVisible(true);
 
 						return;

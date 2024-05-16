@@ -394,4 +394,30 @@ public class UsuarioDAO {
 		else
 			return null;
 	}
+
+	public String enviarRedefinicaoSenha(String email) {
+		UsuarioVO usuarioVO = getUsuario(email);
+		
+		String codigo = gerarStringAleatoria();
+
+		String subject = "Confirmação de exclusão de conta MoneyFlow";
+		String body = "Olá "
+				+ usuarioVO.getNome()
+				+ ",<br><br>"
+				+ "Você está recebendo este email para alterar a senha da sua conta no MoneyFlow, o seu aplicativo de gerenciamento de finanças pessoais."
+				+ "<br><br>"
+				+ "Por favor, tome nota do seguinte código de confirmação:<br><br>"
+				+ "[Código de Confirmação]: "
+				+ codigo
+				+ "<br><br>"
+				+ "Se você solicitou essa ação, insira este código no aplicativo para confirmar a redefinição da sua senha. Se você não solicitou esta ação, por favor, entre em contato conosco imediatamente."
+				+ "<br><br>"
+				+ "Atenciosamente,<br><br>Equipe MoneyFlow";
+
+		if (enviarEmail(email, subject, body))
+			return codigo;
+		else
+			return null;
+	
+	}
 }

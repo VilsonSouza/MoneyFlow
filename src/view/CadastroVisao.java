@@ -307,8 +307,6 @@ public class CadastroVisao extends JFrame {
 				return;
 			}
 
-			System.out.println(codigo);
-
 			this.setVisible(false);
 
 			String userInput = JOptionPane.showInputDialog(null, "Digite o código enviado no seu email:");

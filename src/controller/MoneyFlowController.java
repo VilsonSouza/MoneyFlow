@@ -188,4 +188,8 @@ public class MoneyFlowController {
 	public String enviarConfirmacaoDelUsuario(String email, String nome) {
 		return usuarioDAO.enviarConfirmacaoDelUsuario(email, nome);
 	}
+
+	public String enviarRedefinicaoSenha(String email) {
+		return usuarioDAO.enviarRedefinicaoSenha(email);
+	}
 }

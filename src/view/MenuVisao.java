@@ -276,12 +276,14 @@ public class MenuVisao extends JFrame {
 	private void deslogar() {
 		this.dispose();
 
-		LoginVisao l = new LoginVisao(logo, controller, backgroundTelas, null);
-		l.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		l.setBounds(100, 100, 320, 450);
-		l.setIconImage(logo.getImage());
-		l.setLocationRelativeTo(null);
-		l.setVisible(true);
+		LoginVisao loginVisao = new LoginVisao(logo, controller, backgroundTelas, null);
+		loginVisao.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		loginVisao.setBounds(100, 100, 570, 500);
+		loginVisao.setIconImage(logo.getImage());
+		loginVisao.setLocationRelativeTo(null);
+		loginVisao.getContentPane().setBackground(backgroundTelas);
+		
+		loginVisao.setVisible(true);
 	}
 
 	private Dimension getTamanhoTela() {
