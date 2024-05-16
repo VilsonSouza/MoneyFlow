@@ -304,7 +304,7 @@ public class GerenciamentoQuadroVisao extends JInternalFrame {
 	private void gerenciarEntradasSaidas() {
 		GerenciamentoEntradaSaidaVisao g = new GerenciamentoEntradaSaidaVisao(desktop, backgroundTelas,
 				GerenciamentoQuadroVisao.this, quadros.get(table.getSelectedRow()), controller, emailUsuario);
-		g.setBounds(0, 0, 1050, 650);
+		g.setBounds(0, 0, getTamanhoTela().width, getTamanhoTela().height);
 		g.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		g.setClosable(true);
 		g.getContentPane().setBackground(backgroundTelas);
@@ -361,6 +361,12 @@ public class GerenciamentoQuadroVisao extends JInternalFrame {
 		}
 
 		atualizaTabela();
+	}
+	
+	private Dimension getTamanhoTela() {
+		Dimension tamanho = GerenciamentoQuadroVisao.this.getSize();
+		
+		return tamanho;
 	}
 
 	public void setPosicao() {

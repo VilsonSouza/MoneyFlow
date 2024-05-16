@@ -41,12 +41,15 @@ public class CadastroVisao extends JFrame {
 	private ImageIcon logo;
 
 	private UsuarioVO usuarioVO;
+	
+	private Color backgroundTelas;
 
-	public CadastroVisao(ImageIcon logo, MoneyFlowController controller) {
+	public CadastroVisao(ImageIcon logo, MoneyFlowController controller, Color backgroundTelas) {
 		super("Tela de Cadastro");
 
 		this.logo = logo;
 		this.controller = controller;
+		this.backgroundTelas = backgroundTelas;
 
 		try {
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel"); // Java Swing Nimbus
@@ -245,7 +248,7 @@ public class CadastroVisao extends JFrame {
 
 	// metodo responsavel por montar o painel
 	private JComponent montaPainel() {
-		FormLayout layout = new FormLayout("10dlu:grow, p, center:p:grow, p, 10dlu:grow",
+		FormLayout layout = new FormLayout("10dlu:grow, 100dlu, center:p, 100dlu, 10dlu:grow",
 				"10dlu:grow, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 10dlu:grow");
 
 		// Agrupe as colunas para que tenham o mesmo tamanho
@@ -317,11 +320,12 @@ public class CadastroVisao extends JFrame {
 						JOptionPane.showMessageDialog(this, "Usuário cadastrado com sucesso", "",
 								JOptionPane.INFORMATION_MESSAGE);
 
-						LoginVisao l = new LoginVisao(logo, controller, usuarioVO);
+						LoginVisao l = new LoginVisao(logo, controller, backgroundTelas, usuarioVO);
 						l.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-						l.setBounds(100, 100, 320, 450);
+						l.setBounds(100, 100, 570, 500);
 						l.setIconImage(logo.getImage());
 						l.setLocationRelativeTo(null);
+						l.getContentPane().setBackground(backgroundTelas);
 
 						this.dispose();
 						l.setVisible(true);
@@ -369,11 +373,12 @@ public class CadastroVisao extends JFrame {
 	}
 
 	private void login() {
-		LoginVisao l = new LoginVisao(logo, controller, null);
+		LoginVisao l = new LoginVisao(logo, controller, backgroundTelas, null);
 		l.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		l.setBounds(100, 100, 320, 450);
+		l.setBounds(100, 100, 570, 500);
 		l.setIconImage(logo.getImage());
 		l.setLocationRelativeTo(null);
+		l.getContentPane().setBackground(backgroundTelas);
 
 		this.dispose();
 		l.setVisible(true);

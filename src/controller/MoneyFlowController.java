@@ -92,9 +92,19 @@ public class MoneyFlowController {
 	public int getQtdBancos(String emailUsuario) {
 		return bancoDAO.getQtdBancos(emailUsuario);
 	}
-	public boolean delUsuario(UsuarioVO usuarioVO) {return usuarioDAO.delUsuario(usuarioVO);}
-	public boolean alterUsuario(UsuarioVO usuarioVO) { return usuarioDAO.alterUsuario(usuarioVO);}
-	public UsuarioVO getUsuario(UsuarioVO usuarioVO) {return usuarioDAO.getUsuario(usuarioVO);}
+	
+	public boolean delUsuario(String email) {
+		return usuarioDAO.delUsuario(email);
+	}
+	
+	public boolean alterUsuario(UsuarioVO usuarioVO) {
+		return usuarioDAO.alterUsuario(usuarioVO);
+	}
+	
+	public UsuarioVO getUsuario(String email) {
+		return usuarioDAO.getUsuario(email);
+	}
+	
 	public ArrayList<CategoriaVO> getCategorias(String emailUsuario, String pesquisa, String filtro) {
 		return categoriaDAO.getCategoria(emailUsuario, pesquisa, filtro);
 	}
@@ -173,5 +183,9 @@ public class MoneyFlowController {
 
 	public String enviarConfirmacaoCadastro(String email, String nome) {
 		return usuarioDAO.enviarConfirmacaoCadastro(email, nome);
+	}
+
+	public String enviarConfirmacaoDelUsuario(String email, String nome) {
+		return usuarioDAO.enviarConfirmacaoDelUsuario(email, nome);
 	}
 }

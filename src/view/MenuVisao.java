@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -19,15 +20,15 @@ import model.dao.ConexaoBD;
 import model.vo.UsuarioVO;
 
 public class MenuVisao extends JFrame {
-	
+
 	private MoneyFlowController controller;
 
 	private JDesktopPane desktop;
-	
+
 	private JMenu financeiroMenu;
 	private JMenu aplicacaoMenu;
 	private JMenu relatoriosMenu;
-	
+
 	private JMenuItem quadroItem;
 	private JMenuItem bancoItem;
 	private JMenuItem perfilItem;
@@ -42,19 +43,20 @@ public class MenuVisao extends JFrame {
 	private JMenuBar barra;
 
 	private Color backgroundTelas;
-	
-	private UsuarioVO usuarioVO;
-	
+
+	private String email;
+
 	private ImageIcon logo;
 
-	public MenuVisao(MoneyFlowController controller, UsuarioVO usuarioVO, ImageIcon logo) {
+	public MenuVisao(MoneyFlowController controller, String email, ImageIcon logo, Color backgroundTelas) {
 		// Construtor
 
 		super("MoneyFlow");
-		
+
 		this.controller = controller;
-		this.usuarioVO = usuarioVO;
+		this.email = email;
 		this.logo = logo;
+		this.backgroundTelas = backgroundTelas;
 
 		try {
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel"); // Java Swing Nimbus
@@ -63,7 +65,7 @@ public class MenuVisao extends JFrame {
 		}
 
 		inicializaComponentes();
-		
+
 		financeiroMenu.add(quadroItem);
 		financeiroMenu.addSeparator();
 		financeiroMenu.add(categoriaItem);
@@ -73,12 +75,12 @@ public class MenuVisao extends JFrame {
 		financeiroMenu.add(metaItem);
 		financeiroMenu.addSeparator();
 		financeiroMenu.add(calculadoraFinanceiraItem);
-		
+
 		relatoriosMenu.add(relatorioAnualItem);
 		relatoriosMenu.add(new JMenuItem("Relatório 2"));
 		relatoriosMenu.add(new JMenuItem("Relatório 3"));
 		relatoriosMenu.add(new JMenuItem("Relatório 4"));
-		
+
 		aplicacaoMenu.add(perfilItem);
 		aplicacaoMenu.addSeparator();
 		aplicacaoMenu.add(deslogarItem);
@@ -97,22 +99,22 @@ public class MenuVisao extends JFrame {
 				gerenciarQuadros();
 			}
 		});
-		
+
 		categoriaItem.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gerenciarCategorias();
 			}
 		});
-		
+
 		bancoItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gerenciarBancos();
 			}
 		});
-		
+
 		metaItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -131,21 +133,21 @@ public class MenuVisao extends JFrame {
 				fechar();
 			}
 		});
-		
+
 		deslogarItem.addActionListener(new ActionListener() { // classe interna anonima
 			public void actionPerformed(ActionEvent event) {
 				deslogar();
 			}
 		});
-		
+
 		relatorioAnualItem.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gerarRelatorioAnual();
 			}
 		});
-		
+
 		calculadoraFinanceiraItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				calculadoraFinanceira();
@@ -156,8 +158,6 @@ public class MenuVisao extends JFrame {
 	public void inicializaComponentes() {
 		// Metodo responsavel por inicializar itens do menu
 
-		backgroundTelas = Color.WHITE;
-		
 		financeiroMenu = new JMenu("Financeiro");
 		aplicacaoMenu = new JMenu("Aplicação");
 		relatoriosMenu = new JMenu("Relatórios");
@@ -165,12 +165,12 @@ public class MenuVisao extends JFrame {
 		quadroItem = new JMenuItem("Gerenciar Quadros");
 		bancoItem = new JMenuItem("Gerenciar Bancos");
 		categoriaItem = new JMenuItem("Gerenciar Categorias");
-		perfilItem = new JMenuItem("Configurações de Perfil");
+		perfilItem = new JMenuItem("Editar Perfil");
 		finalizarItem = new JMenuItem("Finalizar Programa");
 		deslogarItem = new JMenuItem("Deslogar");
 		metaItem = new JMenuItem("Gerenciar Metas");
 		calculadoraFinanceiraItem = new JMenuItem("Calculadora Financeira");
-		
+
 		relatorioAnualItem = new JMenuItem("Relatório Anual");
 
 		barra = new JMenuBar();
@@ -187,8 +187,8 @@ public class MenuVisao extends JFrame {
 	}
 
 	private void gerenciarQuadros() {
-		GerenciamentoQuadroVisao g = new GerenciamentoQuadroVisao(desktop, backgroundTelas, controller, usuarioVO.getEmail());
-		g.setBounds(0, 0, 1050, 650);
+		GerenciamentoQuadroVisao g = new GerenciamentoQuadroVisao(desktop, backgroundTelas, controller, email);
+		g.setBounds(0, 0, getTamanhoTela().width-40, getTamanhoTela().height-100);
 		g.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		g.setClosable(true);
 		g.getContentPane().setBackground(backgroundTelas);
@@ -197,10 +197,10 @@ public class MenuVisao extends JFrame {
 		g.setVisible(true);
 		g.setPosicao();
 	}
-	
+
 	private void gerenciarMetas() {
-		GerenciamentoMetasVisao g = new GerenciamentoMetasVisao(desktop, backgroundTelas, controller, usuarioVO.getEmail());
-		g.setBounds(0, 0, 1050, 650);
+		GerenciamentoMetasVisao g = new GerenciamentoMetasVisao(desktop, backgroundTelas, controller, email);
+		g.setBounds(0, 0, getTamanhoTela().width-40, getTamanhoTela().height-100);
 		g.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		g.setClosable(true);
 		g.getContentPane().setBackground(backgroundTelas);
@@ -209,10 +209,10 @@ public class MenuVisao extends JFrame {
 		g.setVisible(true);
 		g.setPosicao();
 	}
-	
+
 	private void gerenciarCategorias() {
-		GerenciamentoCategoriaVisao g = new GerenciamentoCategoriaVisao(desktop, backgroundTelas, controller, usuarioVO.getEmail());
-		g.setBounds(0, 0, 1050, 650);
+		GerenciamentoCategoriaVisao g = new GerenciamentoCategoriaVisao(desktop, backgroundTelas, controller, email);
+		g.setBounds(0, 0, getTamanhoTela().width-40, getTamanhoTela().height-100);
 		g.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		g.setClosable(true);
 		g.getContentPane().setBackground(backgroundTelas);
@@ -223,8 +223,8 @@ public class MenuVisao extends JFrame {
 	}
 
 	private void gerenciarBancos() {
-		GerenciamentoBancoVisao g = new GerenciamentoBancoVisao(desktop, backgroundTelas, controller, usuarioVO.getEmail());
-		g.setBounds(0, 0, 1050, 650);
+		GerenciamentoBancoVisao g = new GerenciamentoBancoVisao(desktop, backgroundTelas, controller, email);
+		g.setBounds(0, 0, getTamanhoTela().width-40, getTamanhoTela().height-100);
 		g.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		g.setClosable(true);
 		g.getContentPane().setBackground(backgroundTelas);
@@ -233,10 +233,10 @@ public class MenuVisao extends JFrame {
 		g.setVisible(true);
 		g.setPosicao();
 	}
-	
+
 	private void gerarRelatorioAnual() {
-		RelatorioAnualVisao g = new RelatorioAnualVisao(controller, usuarioVO.getEmail());
-		g.setBounds(0, 0, 1050, 650);
+		RelatorioAnualVisao g = new RelatorioAnualVisao(controller, email);
+		g.setBounds(0, 0, getTamanhoTela().width-40, getTamanhoTela().height-100);
 		g.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		g.setClosable(true);
 		g.getContentPane().setBackground(backgroundTelas);
@@ -245,18 +245,22 @@ public class MenuVisao extends JFrame {
 		g.setVisible(true);
 		g.setPosicao();
 	}
+
 	private void editaPerfil() {
-		GerenciamentoPerfilVisao g = new GerenciamentoPerfilVisao(desktop,controller, usuarioVO.getEmail(),usuarioVO);
-		g.setBounds(0, 0, 1050, 650);
+		GerenciamentoPerfilVisao g = new GerenciamentoPerfilVisao(desktop, controller, email, backgroundTelas, MenuVisao.this);
+		g.setBounds(0, 0, 350, 450);
+		g.setClosable(true);
 		g.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		g.getContentPane().setBackground(backgroundTelas);
 
 		desktop.add(g);
 		g.setVisible(true);
-
+		g.setPosicao();
+		
+		getTamanhoTela();
 	}
-	
+
 	private void calculadoraFinanceira() {
 		CalculadoraVisao c = new CalculadoraVisao();
 		c.setBounds(0, 0, 400, 250);
@@ -268,16 +272,22 @@ public class MenuVisao extends JFrame {
 		c.setPosicao();
 		c.setVisible(true);
 	}
-	
+
 	private void deslogar() {
 		this.dispose();
-		
-		LoginVisao l = new LoginVisao(logo, controller, null);
+
+		LoginVisao l = new LoginVisao(logo, controller, backgroundTelas, null);
 		l.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		l.setBounds(100, 100, 320, 450);
 		l.setIconImage(logo.getImage());
 		l.setLocationRelativeTo(null);
 		l.setVisible(true);
+	}
+
+	private Dimension getTamanhoTela() {
+		Dimension tamanho = MenuVisao.this.getSize();
+		
+		return tamanho;
 	}
 
 	private void fechar() {

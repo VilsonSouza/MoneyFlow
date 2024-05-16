@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -50,13 +51,16 @@ public class LoginVisao extends JFrame {
 	private ImageIcon logo;
 
 	private UsuarioVO usuarioVO;
+	
+	private Color backgroundTelas;
 
-	public LoginVisao(ImageIcon logo, MoneyFlowController controller, UsuarioVO usuarioVO) {
+	public LoginVisao(ImageIcon logo, MoneyFlowController controller, Color backgroundTelas, UsuarioVO usuarioVO) {
 		super("Tela de Login");
 
 		this.logo = logo;
 		this.controller = controller;
 		this.usuarioVO = usuarioVO;
+		this.backgroundTelas = backgroundTelas;
 
 		try {
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel"); // Java Swing Nimbus
@@ -270,7 +274,7 @@ public class LoginVisao extends JFrame {
 
 	// metodo responsavel por montar o painel
 	private JComponent montaPainel() {
-		FormLayout layout = new FormLayout("10dlu:grow, p, center:p:grow, p, 10dlu:grow",
+		FormLayout layout = new FormLayout("10dlu:grow, 100dlu, center:p, 100dlu, 10dlu:grow",
 				"10dlu:grow, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 10dlu:grow");
 
 		// Agrupe as colunas para que tenham o mesmo tamanho
@@ -316,7 +320,7 @@ public class LoginVisao extends JFrame {
 		}
 
 		if (controller.verificaUsuario(usuarioVO)) {
-			MenuVisao m = new MenuVisao(controller, usuarioVO, logo);
+			MenuVisao m = new MenuVisao(controller, usuarioVO.getEmail(), logo, backgroundTelas);
 			m.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			m.setBounds(100, 100, 1150, 720);
 			m.setResizable(false);
@@ -346,11 +350,12 @@ public class LoginVisao extends JFrame {
 	}
 
 	private void cadastro() {
-		CadastroVisao l = new CadastroVisao(logo, controller);
+		CadastroVisao l = new CadastroVisao(logo, controller, backgroundTelas);
 		l.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		l.setBounds(100, 100, 320, 500);
+		l.setBounds(100, 100, 550, 500);
 		l.setIconImage(logo.getImage());
 		l.setLocationRelativeTo(null);
+		l.getContentPane().setBackground(backgroundTelas);
 
 		this.dispose();
 		l.setVisible(true);

@@ -132,13 +132,13 @@ public class UsuarioDAO {
 		return linhasAfetadas > 0;
 	}
 
-	public UsuarioVO getUsuario(UsuarioVO usuarioVO) {
+	public UsuarioVO getUsuario(String email) {
 		UsuarioVO usuarioRetornado = null;
 
 		String comandoSQL = "SELECT * FROM usuario WHERE email = ?";
 
 		try (PreparedStatement comando = ConexaoBD.getConexaoBD().prepareStatement(comandoSQL)) {
-			comando.setString(1, usuarioVO.getEmail());
+			comando.setString(1, email);
 			ResultSet resultado = comando.executeQuery();
 
 			if (resultado.next()) {
@@ -176,7 +176,7 @@ public class UsuarioDAO {
 		}
 	}
 
-	public boolean delUsuario(UsuarioVO usuarioVO) {
+	public boolean delUsuario(String email) {
 		int linhasAfetadas = 0;
 
 		// Exclua primeiro os registros relacionados nas tabelas filhas
@@ -188,49 +188,49 @@ public class UsuarioDAO {
 			// Exclua os registros relacionados à movimentacao
 			String comandoMovimentacao = "DELETE FROM movimentacao WHERE emailUsuario = ?";
 			try (PreparedStatement stmtMovimentacao = conexao.prepareStatement(comandoMovimentacao)) {
-				stmtMovimentacao.setString(1, usuarioVO.getEmail());
+				stmtMovimentacao.setString(1, email);
 				stmtMovimentacao.executeUpdate();
 			}
 
 			// Exclua os registros relacionados ao banco
 			String comandoBanco = "DELETE FROM banco WHERE emailUsuario = ?";
 			try (PreparedStatement stmtBanco = conexao.prepareStatement(comandoBanco)) {
-				stmtBanco.setString(1, usuarioVO.getEmail());
+				stmtBanco.setString(1, email);
 				stmtBanco.executeUpdate();
 			}
 
 			// Exclua os registros relacionados à categoria
 			String comandoCategoria = "DELETE FROM categoria WHERE emailUsuario = ?";
 			try (PreparedStatement stmtCategoria = conexao.prepareStatement(comandoCategoria)) {
-				stmtCategoria.setString(1, usuarioVO.getEmail());
+				stmtCategoria.setString(1, email);
 				stmtCategoria.executeUpdate();
 			}
 
 			// Exclua os registros relacionados à meta
 			String comandoMeta = "DELETE FROM meta WHERE emailUsuario = ?";
 			try (PreparedStatement stmtMeta = conexao.prepareStatement(comandoMeta)) {
-				stmtMeta.setString(1, usuarioVO.getEmail());
+				stmtMeta.setString(1, email);
 				stmtMeta.executeUpdate();
 			}
 
 			// Exclua os registros relacionados ao quadro
 			String comandoQuadro = "DELETE FROM quadro WHERE emailUsuario = ?";
 			try (PreparedStatement stmtQuadro = conexao.prepareStatement(comandoQuadro)) {
-				stmtQuadro.setString(1, usuarioVO.getEmail());
+				stmtQuadro.setString(1, email);
 				stmtQuadro.executeUpdate();
 			}
 
 			// Exclua os registros relacionados ao alerta
 			String comandoAlerta = "DELETE FROM alerta WHERE emailUsuario = ?";
 			try (PreparedStatement stmtAlerta = conexao.prepareStatement(comandoAlerta)) {
-				stmtAlerta.setString(1, usuarioVO.getEmail());
+				stmtAlerta.setString(1, email);
 				stmtAlerta.executeUpdate();
 			}
 
 			// Exclua o registro do usuário principal
 			String comandoUsuario = "DELETE FROM usuario WHERE email = ?";
 			try (PreparedStatement stmtUsuario = conexao.prepareStatement(comandoUsuario)) {
-				stmtUsuario.setString(1, usuarioVO.getEmail());
+				stmtUsuario.setString(1, email);
 				linhasAfetadas = stmtUsuario.executeUpdate();
 			}
 
@@ -315,19 +315,19 @@ public class UsuarioDAO {
 	}
 
 	public static String gerarStringAleatoria() {
-		// Defina os caracteres que serão usados na string
+		
 		String caracteres = "0123456789";
-		// Crie um objeto Random
+
 		Random random = new Random();
 		StringBuilder sb = new StringBuilder(6);
-		// Gere cada dígito da string aleatória
+
 		for (int i = 0; i < 6; i++) {
-			// Gere um índice aleatório baseado no tamanho da string de caracteres
+
 			int index = random.nextInt(caracteres.length());
-			// Adicione o caractere correspondente ao índice gerado ao StringBuilder
+
 			sb.append(caracteres.charAt(index));
 		}
-		// Converta o StringBuilder em uma String e retorne
+
 		return sb.toString().toUpperCase();
 	}
 
@@ -362,6 +362,32 @@ public class UsuarioDAO {
 				+ ",<br><br>Obrigado por se cadastrar no MoneyFlow, o seu aplicativo de gerenciamento financeiro pessoal!<br><br>Para concluir o processo de cadastro, por favor, insira o seguinte código de confirmação no aplicativo:<br><br> [Código de Confirmação]: "
 				+ codigo
 				+ "<br><br>Este código é necessário para ativar a sua conta e começar a utilizar todas as funcionalidades do MoneyFlow. Se você não iniciou o processo de cadastro, por favor, ignore este e-mail.<br><br>Se precisar de ajuda ou tiver alguma dúvida, não hesite em nos contatar.<br><br><br><br>Atenciosamente,<br><br>Equipe MoneyFlow";
+
+		if (enviarEmail(email, subject, body))
+			return codigo;
+		else
+			return null;
+	}
+	
+	public String enviarConfirmacaoDelUsuario(String email, String nome) {
+
+		String codigo = gerarStringAleatoria();
+
+		String subject = "Confirmação de exclusão de conta MoneyFlow";
+		String body = "Olá "
+				+ nome
+				+ ",<br><br>"
+				+ "Você está recebendo este email para confirmar a exclusão da sua conta no MoneyFlow, o seu aplicativo de gerenciamento de finanças pessoais."
+				+ "<br><br>"
+				+ "Por favor, tome nota do seguinte código de confirmação:<br><br>"
+				+ "[Código de Confirmação]: "
+				+ codigo
+				+ "<br><br>"
+				+ "Se você solicitou a exclusão da sua conta, insira este código no aplicativo para confirmar a exclusão da sua conta. Se você não solicitou esta ação, por favor, entre em contato conosco imediatamente."
+				+ "<br><br>"
+				+ "Agradecemos por usar o MoneyFlow para gerenciar suas finanças e esperamos tê-lo(a) novamente conosco no futuro."
+				+ "<br><br>"
+				+ "Atenciosamente,<br><br>Equipe MoneyFlow";
 
 		if (enviarEmail(email, subject, body))
 			return codigo;
