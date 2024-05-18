@@ -173,8 +173,8 @@ public class MoneyFlowController {
 		return movimentacaoDAO.alterMovimentacaoMeta(emailUsuario, codigoMeta);
 	}
 
-	public ArrayList<RelatorioAnualVO> getRelatorioAnual(String emailUsuario) {
-		return usuarioDAO.getRelatorioAnual(emailUsuario);
+	public ArrayList<RelatorioAnualVO> getRelatorioAnual(String emailUsuario, Date de, Date ate) {
+		return usuarioDAO.getRelatorioAnual(emailUsuario, de, ate);
 	}
 
 	public boolean enviarEmail(String emailReceiptient, String emailSubject, String emailBody) {

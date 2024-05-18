@@ -23,7 +23,7 @@ public class MoneyFlow_App {
 		ImageIcon logo = new ImageIcon("icons/logo_app.png");
 		
 		//inicializando aplicacao
-		LoginVisao l = new LoginVisao(logo, controller, backgroundTelas, new UsuarioVO("gshayashida@gmail.com", "senha", "guga"));
+		LoginVisao l = new LoginVisao(logo, controller, backgroundTelas, new UsuarioVO("gustavo.gp520@gmail.com", "senha", "guga"));
 		l.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		l.setBounds(100, 100, 570, 500);
 		l.setIconImage(logo.getImage());

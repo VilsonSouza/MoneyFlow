@@ -39,6 +39,7 @@ public class MenuVisao extends JFrame {
 	private JMenuItem calculadoraFinanceiraItem;
 
 	private JMenuItem relatorioAnualItem;
+	private JMenuItem relatorioCategoriaItem;
 
 	private JMenuBar barra;
 
@@ -77,9 +78,8 @@ public class MenuVisao extends JFrame {
 		financeiroMenu.add(calculadoraFinanceiraItem);
 
 		relatoriosMenu.add(relatorioAnualItem);
-		relatoriosMenu.add(new JMenuItem("Relatório 2"));
-		relatoriosMenu.add(new JMenuItem("Relatório 3"));
-		relatoriosMenu.add(new JMenuItem("Relatório 4"));
+		relatoriosMenu.addSeparator();
+		relatoriosMenu.add(relatorioCategoriaItem);
 
 		aplicacaoMenu.add(perfilItem);
 		aplicacaoMenu.addSeparator();
@@ -141,13 +141,17 @@ public class MenuVisao extends JFrame {
 		});
 
 		relatorioAnualItem.addActionListener(new ActionListener() {
-
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				gerarRelatorioAnual();
 			}
 		});
 
+		relatorioCategoriaItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				gerarRelatorioCategoria();
+			}
+		});
+		
 		calculadoraFinanceiraItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				calculadoraFinanceira();
@@ -171,7 +175,8 @@ public class MenuVisao extends JFrame {
 		metaItem = new JMenuItem("Gerenciar Metas");
 		calculadoraFinanceiraItem = new JMenuItem("Calculadora Financeira");
 
-		relatorioAnualItem = new JMenuItem("Relatório Anual");
+		relatorioAnualItem = new JMenuItem("Relatório Anual de Movimentações");
+		relatorioCategoriaItem = new JMenuItem("Relatório de Categorias");
 
 		barra = new JMenuBar();
 
@@ -235,7 +240,19 @@ public class MenuVisao extends JFrame {
 	}
 
 	private void gerarRelatorioAnual() {
-		RelatorioAnualVisao g = new RelatorioAnualVisao(controller, email);
+		PlotRelatorioAnualVisao g = new PlotRelatorioAnualVisao(controller, email);
+		g.setBounds(0, 0, getTamanhoTela().width-40, getTamanhoTela().height-100);
+		g.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		g.setClosable(true);
+		g.getContentPane().setBackground(backgroundTelas);
+
+		desktop.add(g);
+		g.setVisible(true);
+		g.setPosicao();
+	}
+	
+	private void gerarRelatorioCategoria() {
+		PlotRelatorioCategoriaVisao g = new PlotRelatorioCategoriaVisao(controller, email);
 		g.setBounds(0, 0, getTamanhoTela().width-40, getTamanhoTela().height-100);
 		g.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		g.setClosable(true);

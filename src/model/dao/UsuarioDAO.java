@@ -2,8 +2,10 @@ package model.dao;
 
 import java.security.Key;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 
 import model.dao.ConexaoBD;
 import model.vo.MovimentacaoVO;
@@ -260,12 +262,56 @@ public class UsuarioDAO {
 		}
 	}
 
-	public ArrayList<RelatorioAnualVO> getRelatorioAnual(String emailUsuario) {
+	public ArrayList<RelatorioAnualVO> getRelatorioAnual(String emailUsuario, Date de, Date ate) {
 		RelatorioAnualVO relatorioVO;
 		ArrayList<RelatorioAnualVO> dados = new ArrayList<RelatorioAnualVO>();
 
-		String comandoSQL = "SELECT MONTH(m.data_ocorrencia) AS mes, SUM(m.valor_total) AS valorTotal FROM movimentacao m JOIN usuario u ON m.emailUsuario = u.email WHERE YEAR(m.data_ocorrencia) = YEAR(CURRENT_DATE()) AND u.email = '"
-				+ emailUsuario + "' GROUP BY MONTH(m.data_ocorrencia) ORDER BY mes;";
+		String comandoSQL = "SELECT MONTH(m.data_ocorrencia) AS mes, SUM(m.valor) AS valorTotal FROM (SELECT *, CASE WHEN entrada THEN valor_total ELSE valor_total * -1 END as valor FROM movimentacao WHERE data_ocorrencia BETWEEN '"
+				+ transformaDateString(de)
+				+ "' AND '"
+				+ transformaDateString(ate)
+				+ "') m JOIN usuario u ON m.emailUsuario = u.email WHERE YEAR(m.data_ocorrencia) = YEAR(CURRENT_DATE()) AND u.email = '"
+				+ emailUsuario
+				+ "' GROUP BY MONTH(m.data_ocorrencia) ORDER BY mes;";
+
+		try {
+			Statement comando = ConexaoBD.getConexaoBD().createStatement();
+			ResultSet resultado = comando.executeQuery(comandoSQL);
+
+			while (resultado.next()) {
+				relatorioVO = new RelatorioAnualVO();
+				relatorioVO.setNumeroMes(resultado.getInt("mes"));
+				relatorioVO.setValorTotalMes(resultado.getFloat("valorTotal"));
+
+				dados.add(relatorioVO);
+			}
+
+			resultado.close();
+			comando.close();
+
+		} catch (SQLException e) {
+			System.err.println("Erro ao realizar conexao com o banco " + "verifique a url de conexão");
+			e.printStackTrace();
+		}
+
+		return dados;
+	}
+	
+	public ArrayList<RelatorioAnualVO> getRelatorioCategoria(String emailUsuario, int codigoCategoria, Date de, Date ate) {
+		RelatorioAnualVO relatorioVO;
+		ArrayList<RelatorioAnualVO> dados = new ArrayList<RelatorioAnualVO>();
+
+		String comandoSQL = "SELECT categoria.descricao, movimentacao.valor_total from movimentacao INNER JOIN usuario ON usuario.email = movimentacao.emailUsuario INNER JOIN categoria ON categoria.codigo = movimentacao.codigoCategoria WHERE usuario.email = '"
+				+ emailUsuario
+				+ "' and movimentacao.data_ocorrencia BETWEEN '"
+				+ transformaDateString(de)
+				+ "' AND '"
+				+ transformaDateString(ate)
+				+ "' and movimentacao.entrada = 0 and categoria.codigo = "
+				+ codigoCategoria
+				+ ";";
+		
+		System.out.println(comandoSQL);
 
 		try {
 			Statement comando = ConexaoBD.getConexaoBD().createStatement();
@@ -419,5 +465,13 @@ public class UsuarioDAO {
 		else
 			return null;
 	
+	}
+	
+	public String transformaDateString(Date dataBanco) {
+		SimpleDateFormat formatoUsual = new SimpleDateFormat("yyyy-MM-dd");
+
+		String dataString = formatoUsual.format(dataBanco);
+
+		return dataString;
 	}
 }

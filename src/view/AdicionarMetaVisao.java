@@ -109,6 +109,7 @@ public class AdicionarMetaVisao extends JInternalFrame {
         textValorArrecadado = new JTextField();
         
         textValorArrecadado.setText("0");
+        textValorEsperado.setText("0");
         
         textValorArrecadado.setEnabled(false);
         textCodigo.setEnabled(false);

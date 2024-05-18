@@ -251,13 +251,13 @@ public class GerenciamentoMetasVisao extends JInternalFrame{
 	private JComponent montaPainel() {
 		FormLayout layout = new FormLayout(
 				"5dlu, p, 5dlu, p:grow, 5dlu, p:grow, 150dlu:grow, 5dlu, p, 5dlu",
-				"5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 150dlu:grow, 5dlu");
+				"5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 150dlu:grow, p, 5dlu");
 		
 		DefaultFormBuilder builder = new DefaultFormBuilder(layout);
 
 		CellConstraints cc = new CellConstraints();
 
-		builder.add(barraRolagem, cc.xywh(2, 4, 6, 6));
+		builder.add(barraRolagem, cc.xywh(2, 4, 6, 7));
 
 		builder.addLabel("Pesquisa:", cc.xy(2, 2));
 		builder.add(textPesquisa, cc.xy(4, 2));
@@ -267,6 +267,7 @@ public class GerenciamentoMetasVisao extends JInternalFrame{
 		builder.add(buttonAddMeta, cc.xy(9, 4));
 		builder.add(buttonAlterMeta, cc.xy(9, 6));
 		builder.add(buttonDelMeta, cc.xy(9, 8));
+		builder.add(buttonVoltar, cc.xy(9, 10));
 
 		return builder.getPanel();
 	}

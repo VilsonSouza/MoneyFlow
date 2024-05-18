@@ -47,11 +47,13 @@ public class GerenciamentoQuadroVisao extends JInternalFrame {
 	private JButton buttonAlterQuadro;
 	private JButton buttonDelQuadro;
 	private JButton buttonAddDelMovimentacao;
+	private JButton buttonVoltar;
 
 	private ImageIcon iconAdd;
 	private ImageIcon iconAlter;
 	private ImageIcon iconDelete;
 	private ImageIcon iconMovimentacoes;
+	private ImageIcon iconVoltar;
 
 	private DefaultTableModel tableModel;
 
@@ -177,6 +179,12 @@ public class GerenciamentoQuadroVisao extends JInternalFrame {
 				atualizaTabela();
 			}
 		});
+		
+		buttonVoltar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				voltar();
+			}
+		});
 	}
 
 	// metodo responsavel por criar a JTable
@@ -233,16 +241,19 @@ public class GerenciamentoQuadroVisao extends JInternalFrame {
 		buttonAlterQuadro = new JButton();
 		buttonDelQuadro = new JButton();
 		buttonAddDelMovimentacao = new JButton();
+		buttonVoltar = new JButton();
 
 		iconAdd = new ImageIcon("icons/add.png");
 		iconAlter = new ImageIcon("icons/alter.png");
 		iconDelete = new ImageIcon("icons/delete.png");
 		iconMovimentacoes = new ImageIcon("icons/list.png");
+		iconVoltar = new ImageIcon("icons/voltar.png");
 
 		buttonAddQuadro.setIcon(iconAdd);
 		buttonAlterQuadro.setIcon(iconAlter);
 		buttonDelQuadro.setIcon(iconDelete);
 		buttonAddDelMovimentacao.setIcon(iconMovimentacoes);
+		buttonVoltar.setIcon(iconVoltar);
 
 		buttonAddQuadro.setToolTipText("Adicionar Novo Quadro");
 		buttonAlterQuadro.setToolTipText("Alterar Quadro Existente");
@@ -253,7 +264,7 @@ public class GerenciamentoQuadroVisao extends JInternalFrame {
 	// metodo responsavel por montar o painel
 	private JComponent montaPainel() {
 		FormLayout layout = new FormLayout("5dlu, p, 5dlu, p:grow, 5dlu, p:grow, 50dlu:grow, 5dlu, p, 5dlu",
-				"5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 150dlu:grow, 5dlu");
+				"5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 150dlu:grow, p, 5dlu");
 
 		// Agrupe as colunas para que tenham o mesmo tamanho
 		layout.setColumnGroups(new int[][] { { 4, 6 } });
@@ -262,7 +273,7 @@ public class GerenciamentoQuadroVisao extends JInternalFrame {
 
 		CellConstraints cc = new CellConstraints();
 
-		builder.add(barraRolagem, cc.xywh(2, 4, 6, 8));
+		builder.add(barraRolagem, cc.xywh(2, 4, 6, 9));
 
 		builder.addLabel("Pesquisa:", cc.xy(2, 2));
 		builder.add(textPesquisa, cc.xy(4, 2));
@@ -273,6 +284,7 @@ public class GerenciamentoQuadroVisao extends JInternalFrame {
 		builder.add(buttonAddQuadro, cc.xy(9, 6));
 		builder.add(buttonAlterQuadro, cc.xy(9, 8));
 		builder.add(buttonDelQuadro, cc.xy(9, 10));
+		builder.add(buttonVoltar, cc.xy(9, 12));
 
 		return builder.getPanel();
 	}
@@ -361,6 +373,10 @@ public class GerenciamentoQuadroVisao extends JInternalFrame {
 		}
 
 		atualizaTabela();
+	}
+	
+	private void voltar() {
+		this.dispose();
 	}
 	
 	private Dimension getTamanhoTela() {

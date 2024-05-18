@@ -27,8 +27,8 @@ public class RelatorioAnualVisao extends JInternalFrame {
 		gerarGrafico();
 	}
 	
-	private void gerarGrafico() {
-		dados = controller.getRelatorioAnual(emailUsuario);
+	private ChartPanel gerarGrafico() {
+//		dados = controller.getRelatorioAnual(emailUsuario, de, ate);
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
 		for (RelatorioAnualVO r : dados) {
@@ -43,13 +43,13 @@ public class RelatorioAnualVisao extends JInternalFrame {
 			"Total",
 			dataset
 		);
-
+		
 		ChartPanel painel = new ChartPanel(grafico);
 		
 		grafico.getCategoryPlot().getRenderer().setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
 		grafico.getCategoryPlot().getRenderer().setBaseItemLabelsVisible(true);
 		
-		add(painel);
+		return painel;
 	}
 	
 	public void setPosicao() {
