@@ -192,4 +192,8 @@ public class MoneyFlowController {
 	public String enviarRedefinicaoSenha(String email) {
 		return usuarioDAO.enviarRedefinicaoSenha(email);
 	}
+
+	public ArrayList<RelatorioCategoriaVO> getRelatorioCategoria(String emailUsuario, Date de, Date ate) {
+		return usuarioDAO.getRelatorioCategoria(emailUsuario, de, ate);
+	}
 }

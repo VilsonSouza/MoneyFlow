@@ -1,5 +1,6 @@
 package view;
 
+import com.jgoodies.forms.builder.ButtonBarBuilder;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -13,11 +14,15 @@ import model.vo.MovimentacaoVO;
 
 import javax.swing.*;
 
+import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -42,6 +47,9 @@ public class AlterarEntradaVisao extends JInternalFrame {
 
     private JButton buttonCancelar;
     private JButton buttonSalvar;
+    
+	private ImageIcon iconCancelar;
+	private ImageIcon iconSalvar;
     
     private GerenciamentoEntradaSaidaVisao gerenciamentoEntradaSaidaVisao;
     
@@ -101,6 +109,66 @@ public class AlterarEntradaVisao extends JInternalFrame {
 				
 			}
 		});
+        
+        buttonSalvar.addMouseListener(new MouseListener() {
+
+			public void mouseEntered(MouseEvent e) {
+				buttonSalvar.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Define o cursor para a mão
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				buttonSalvar.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // Define o cursor padrão
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+        
+        buttonCancelar.addMouseListener(new MouseListener() {
+
+			public void mouseEntered(MouseEvent e) {
+				buttonCancelar.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Define o cursor para a mão
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				buttonCancelar.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // Define o cursor padrão
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
     }
 
     private void inicializaComponentes() {
@@ -112,8 +180,17 @@ public class AlterarEntradaVisao extends JInternalFrame {
 
         textCodigo.setEditable(false);
 
-        buttonCancelar = new JButton("Cancelar");
-        buttonSalvar = new JButton("Salvar");
+        buttonCancelar = new JButton();
+        buttonSalvar = new JButton();
+        
+        buttonCancelar.setToolTipText("Cancelar");
+        buttonSalvar.setToolTipText("Salvar");
+        
+		iconCancelar = new ImageIcon("icons/voltar.png");
+		iconSalvar = new ImageIcon("icons/save.png");
+
+		buttonCancelar.setIcon(iconCancelar);
+		buttonSalvar.setIcon(iconSalvar);
 
         comboBanco = new JComboBox<>();
         comboMeta = new JComboBox<>();
@@ -141,7 +218,7 @@ public class AlterarEntradaVisao extends JInternalFrame {
     private JComponent montaPainel() {
         FormLayout layout = new FormLayout(
         		"10dlu, p:grow, 10dlu",
-                "10dlu:grow, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 10dlu:grow");
+                "10dlu:grow, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 15dlu, p, 10dlu:grow");
 
         DefaultFormBuilder builder = new DefaultFormBuilder(layout);
 
@@ -168,8 +245,7 @@ public class AlterarEntradaVisao extends JInternalFrame {
         builder.addLabel("Data Entrada:", cc.xy(2, 26));
         builder.add(dateChooserEntrada, cc.xy(2, 28));
 
-        builder.add(buttonCancelar, cc.xy(2, 30));
-        builder.add(buttonSalvar, cc.xy(2, 32));
+        builder.add(montaBarraBotao(), cc.xy(2, 30));
 
         return builder.getPanel();
     }
@@ -267,6 +343,11 @@ public class AlterarEntradaVisao extends JInternalFrame {
     	gerenciamentoEntradaSaidaVisao.atualizaTabela();
     	gerenciamentoEntradaSaidaVisao.setVisible(true);
     }
+    
+    // metodo responsavel por montar a barra de botoes que sera adicionada ao final da janela
+ 	private Component montaBarraBotao() {
+ 		return ButtonBarBuilder.create().addButton(buttonSalvar, buttonCancelar).build();
+ 	}
     
     public void setPosicao() {
 		Dimension d = this.getDesktopPane().getSize();

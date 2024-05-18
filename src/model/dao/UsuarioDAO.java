@@ -10,6 +10,7 @@ import java.util.Date;
 import model.dao.ConexaoBD;
 import model.vo.MovimentacaoVO;
 import model.vo.RelatorioAnualVO;
+import model.vo.RelatorioCategoriaVO;
 import model.vo.UsuarioVO;
 
 import javax.crypto.Cipher;
@@ -297,30 +298,26 @@ public class UsuarioDAO {
 		return dados;
 	}
 	
-	public ArrayList<RelatorioAnualVO> getRelatorioCategoria(String emailUsuario, int codigoCategoria, Date de, Date ate) {
-		RelatorioAnualVO relatorioVO;
-		ArrayList<RelatorioAnualVO> dados = new ArrayList<RelatorioAnualVO>();
+	public ArrayList<RelatorioCategoriaVO> getRelatorioCategoria(String emailUsuario, Date de, Date ate) {
+		RelatorioCategoriaVO relatorioVO;
+		ArrayList<RelatorioCategoriaVO> dados = new ArrayList<RelatorioCategoriaVO>();
 
-		String comandoSQL = "SELECT categoria.descricao, movimentacao.valor_total from movimentacao INNER JOIN usuario ON usuario.email = movimentacao.emailUsuario INNER JOIN categoria ON categoria.codigo = movimentacao.codigoCategoria WHERE usuario.email = '"
+		String comandoSQL = "SELECT c.descricao, sum(m.valor) as valor_total FROM (SELECT *, CASE WHEN entrada THEN valor_total ELSE valor_total * -1 END as valor FROM movimentacao WHERE emailUsuario = '"
 				+ emailUsuario
-				+ "' and movimentacao.data_ocorrencia BETWEEN '"
+				+ "' AND data_ocorrencia BETWEEN '"
 				+ transformaDateString(de)
 				+ "' AND '"
 				+ transformaDateString(ate)
-				+ "' and movimentacao.entrada = 0 and categoria.codigo = "
-				+ codigoCategoria
-				+ ";";
+				+ "') m INNER JOIN categoria c ON c.codigo = m.codigoCategoria GROUP BY c.descricao;";
 		
-		System.out.println(comandoSQL);
-
 		try {
 			Statement comando = ConexaoBD.getConexaoBD().createStatement();
 			ResultSet resultado = comando.executeQuery(comandoSQL);
 
 			while (resultado.next()) {
-				relatorioVO = new RelatorioAnualVO();
-				relatorioVO.setNumeroMes(resultado.getInt("mes"));
-				relatorioVO.setValorTotalMes(resultado.getFloat("valorTotal"));
+				relatorioVO = new RelatorioCategoriaVO();
+				relatorioVO.setCategoriaDescricao(resultado.getString("descricao"));
+				relatorioVO.setValor(resultado.getFloat("valor_total"));
 
 				dados.add(relatorioVO);
 			}

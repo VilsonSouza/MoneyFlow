@@ -1,11 +1,16 @@
 package view;
 
+import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.*;
 
+import com.jgoodies.forms.builder.ButtonBarBuilder;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -19,8 +24,12 @@ public class AlterarCategoriaVisao extends JInternalFrame {
 
     private JTextField textCodigo;
     private JTextField textDescricao;
+
     private JButton buttonCancelar;
     private JButton buttonSalvar;
+    
+	private ImageIcon iconCancelar;
+	private ImageIcon iconSalvar;
         
     private GerenciamentoCategoriaVisao gerenciarCategoriaVisao;
     
@@ -62,13 +71,83 @@ public class AlterarCategoriaVisao extends JInternalFrame {
 				cancelar();
 			}
 		});
+        
+        buttonSalvar.addMouseListener(new MouseListener() {
+
+			public void mouseEntered(MouseEvent e) {
+				buttonSalvar.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Define o cursor para a mão
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				buttonSalvar.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // Define o cursor padrão
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+        
+        buttonCancelar.addMouseListener(new MouseListener() {
+
+			public void mouseEntered(MouseEvent e) {
+				buttonCancelar.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Define o cursor para a mão
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				buttonCancelar.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); // Define o cursor padrão
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
     }
 
     private void inicializaComponentes() {
         textCodigo = new JTextField();
         textDescricao = new JTextField();
-        buttonCancelar = new JButton("Cancelar");
-        buttonSalvar = new JButton("Salvar");
+
+        buttonCancelar = new JButton();
+        buttonSalvar = new JButton();
+        
+        buttonCancelar.setToolTipText("Cancelar");
+        buttonSalvar.setToolTipText("Salvar");
+        
+		iconCancelar = new ImageIcon("icons/voltar.png");
+		iconSalvar = new ImageIcon("icons/save.png");
+
+		buttonCancelar.setIcon(iconCancelar);
+		buttonSalvar.setIcon(iconSalvar);
         
         textCodigo.setEnabled(false);
     }
@@ -76,7 +155,7 @@ public class AlterarCategoriaVisao extends JInternalFrame {
     private JComponent montaPainel() {
         FormLayout layout = new FormLayout(
                 "10dlu, p:grow, 10dlu",
-                "10dlu:grow, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 10dlu:grow"
+                "10dlu:grow, p, 5dlu, p, 5dlu, p, 5dlu, p, 15dlu, p, 10dlu:grow"
         );
         
         DefaultFormBuilder builder = new DefaultFormBuilder(layout);
@@ -88,8 +167,7 @@ public class AlterarCategoriaVisao extends JInternalFrame {
         builder.addLabel("Descrição:", cc.xy(2, 6));
         builder.add(textDescricao, cc.xy(2, 8));
 
-        builder.add(buttonCancelar, cc.xy(2, 10));
-        builder.add(buttonSalvar, cc.xy(2, 12));
+        builder.add(montaBarraBotao(), cc.xy(2, 10));
 
         return builder.getPanel();
     }
@@ -128,6 +206,11 @@ public class AlterarCategoriaVisao extends JInternalFrame {
     	gerenciarCategoriaVisao.atualizaTabela();
     	gerenciarCategoriaVisao.setVisible(true);
     }
+    
+    // metodo responsavel por montar a barra de botoes que sera adicionada ao final da janela
+ 	private Component montaBarraBotao() {
+ 		return ButtonBarBuilder.create().addButton(buttonSalvar, buttonCancelar).build();
+ 	}
     
     public void setPosicao() {
 		Dimension d = this.getDesktopPane().getSize();

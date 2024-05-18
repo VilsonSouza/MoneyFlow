@@ -5,7 +5,6 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import controller.MoneyFlowController;
 import model.vo.CategoriaVO;
-import view.GerenciamentoBancoVisao.TableRenderer;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
