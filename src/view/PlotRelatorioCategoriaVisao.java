@@ -152,7 +152,7 @@ public class PlotRelatorioCategoriaVisao extends JInternalFrame {
 	}
 
 	private JFreeChart createChart(DefaultCategoryDataset dataset) {
-		return ChartFactory.createBarChart("Comparação Anual por Mês", "Mês", "Total", dataset,
+		return ChartFactory.createBarChart("Lucro por Categoria", "Categoria", "Total (R$)", dataset,
 				PlotOrientation.VERTICAL, true, true, false);
 	}
 
