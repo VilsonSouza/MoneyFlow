@@ -98,13 +98,32 @@ public class RedefinirSenhaVisao extends JFrame {
 
 		String userInput = JOptionPane.showInputDialog(null, "Digite o código enviado no seu email:");
 
-		if (userInput != null && !userInput.isEmpty() && codigo != null) {
-			System.out.println("Deu certo");
-			
-		}else {
-			JOptionPane.showMessageDialog(this, "Erro ao redefinir senha\nRe-envie o código e tente novamente",
-					"Erro", JOptionPane.ERROR_MESSAGE);
-		}
+
+        if (userInput != null && !userInput.isEmpty() && codigo != null) {
+            if (codigo.equals(userInput)) {
+                AtualizarSenhaVisao s = new AtualizarSenhaVisao(this.loginVisao,this.controller, textEmail.getText());
+                s.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                s.setBounds(100, 100, 1150, 720);
+                s.setResizable(false);
+                s.setLocationRelativeTo(null);
+                s.setVisible(true);
+            }
+            else{
+                JOptionPane.showMessageDialog(this, "Erro ao Alterar Senha\nRe-envie o código e tente novamente",
+                        "Erro", JOptionPane.ERROR_MESSAGE);
+                RedefinirSenhaVisao s = new RedefinirSenhaVisao(this.loginVisao,this.controller);
+                s.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                s.setBounds(100, 100, 550, 500);
+                s.setResizable(false);
+                s.setLocationRelativeTo(null);
+                s.setVisible(true);
+            }
+
+
+        }else {
+            JOptionPane.showMessageDialog(this, "Erro ao redefinir senha\nRe-envie o código e tente novamente",
+                    "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
     private void cancelar() {
