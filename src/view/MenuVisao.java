@@ -206,7 +206,7 @@ public class MenuVisao extends JFrame {
 	}
 	
 	private void gerenciarAlertas() {
-		GerenciamentoAlertaVisao2 g = new GerenciamentoAlertaVisao2(desktop, backgroundTelas, controller, email);
+		GerenciamentoAlertaVisao g = new GerenciamentoAlertaVisao(desktop, backgroundTelas, controller, email);
 		g.setBounds(0, 0, getTamanhoTela().width-40, getTamanhoTela().height-100);
 		g.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		g.setClosable(true);

@@ -21,7 +21,7 @@ public class AlertaDAO {
 				+ transformaDateString(de)
 				+ "' AND '"
 				+ transformaDateString(ate)
-				+ "' ORDER BY a.data_alerta DESC;";
+				+ "' ORDER BY a.data_alerta;";
 
 		try {
 			Statement comando = ConexaoBD.getConexaoBD().createStatement();

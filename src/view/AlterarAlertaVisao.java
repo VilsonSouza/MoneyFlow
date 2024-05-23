@@ -36,9 +36,9 @@ public class AlterarAlertaVisao extends JInternalFrame {
 	private ImageIcon iconCancelar;
 	private ImageIcon iconSalvar;
     
-    private GerenciamentoAlertaVisao2 gerenciarAlertaVisao;
+    private GerenciamentoAlertaVisao gerenciarAlertaVisao;
 
-    public AlterarAlertaVisao(GerenciamentoAlertaVisao2 gerenciamentoAlertaVisao2, MoneyFlowController controller, AlertaVO alertaVO) {
+    public AlterarAlertaVisao(GerenciamentoAlertaVisao gerenciamentoAlertaVisao2, MoneyFlowController controller, AlertaVO alertaVO) {
     	super("Alterar Alerta");
     	
     	this.gerenciarAlertaVisao = gerenciamentoAlertaVisao2;

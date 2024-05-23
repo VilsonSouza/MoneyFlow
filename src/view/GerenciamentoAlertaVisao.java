@@ -21,7 +21,6 @@ import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -39,7 +38,6 @@ import com.toedter.calendar.JDateChooser;
 
 import controller.MoneyFlowController;
 import model.vo.AlertaVO;
-import model.vo.UsuarioVO;
 
 public class GerenciamentoAlertaVisao extends JInternalFrame {
 
@@ -58,13 +56,13 @@ public class GerenciamentoAlertaVisao extends JInternalFrame {
 	private JDateChooser calendarDe;
 	private JDateChooser calendarAte;
 
-	private JScrollPane barraRolagem;
-
-	private JDesktopPane desktop;
+	private AlertaModelListener alertaModelListener;
 
 	private Tabela table;
 
-	private AlertaModelListener alertaModelListener;
+	private JScrollPane barraRolagem;
+
+	private JDesktopPane desktop;
 
 	private TableRowSorter tableSorter;
 
@@ -73,13 +71,11 @@ public class GerenciamentoAlertaVisao extends JInternalFrame {
 	private ArrayList<AlertaVO> alertas;
 
 	private String emailUsuario;
-	
-	private UsuarioVO usuarioVO;
 
 	// construtor
 	public GerenciamentoAlertaVisao(JDesktopPane desktop, Color backgroundTelas, MoneyFlowController controller,
 			String emailUsuario) {
-		super("Gerenciamento de Alertas");
+		super("Gerenciar Alertas");
 
 		this.desktop = desktop;
 		this.backgroundTelas = backgroundTelas;
@@ -99,69 +95,70 @@ public class GerenciamentoAlertaVisao extends JInternalFrame {
 		atualizaTabela();
 
 		this.getContentPane().add(this.montaPainel());
-		
+
 		buttonAddAlerta.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				adicionarAlerta();
 			}
 		});
-		
+
 		buttonAlterAlerta.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				alterarAlerta();
 			}
 		});
-		
-		buttonDelAlerta.addActionListener(new ActionListener() {	
+
+		buttonDelAlerta.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				deletarAlerta();
 			}
 		});
-		
+
 		buttonVoltar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				voltar();
 			}
 		});
-		
-		
+
 		table.addMouseListener(new MouseListener() {
-			
+
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
+				if (table.getSelectedRowCount() == 1) {
+					buttonAlterAlerta.setEnabled(true);
+					buttonDelAlerta.setEnabled(true);
+				}
 			}
-			
+
 			@Override
 			public void mousePressed(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
+			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(e.getClickCount() == 2) {
+				if (e.getClickCount() == 2)
 					alterarAlerta();
-				}
 			}
 		});
-		
+
 		calendarAte.addPropertyChangeListener("date", new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -181,7 +178,7 @@ public class GerenciamentoAlertaVisao extends JInternalFrame {
 		});
 	}
 
-	// metodo responsavel por criar a JTable
+	//metodo responsavel por criar a JTable
 	private void criaJTable() {
 		// inicializa a JTable
 		table = new Tabela(alertaModelListener);
@@ -209,17 +206,17 @@ public class GerenciamentoAlertaVisao extends JInternalFrame {
 		// inicializando e adicionando a tabela a um ScrollPane, case precise de uma
 		// barra de rolagem
 		barraRolagem = new JScrollPane(table);
-		
+
 		buttonAddAlerta = new JButton();
 		buttonAlterAlerta = new JButton();
 		buttonDelAlerta = new JButton();
 		buttonVoltar = new JButton();
 
+		iconVoltar = new ImageIcon("icons/voltar.png");
 		iconAdd = new ImageIcon("icons/add.png");
 		iconAlter = new ImageIcon("icons/alter.png");
 		iconDelete = new ImageIcon("icons/delete.png");
-		iconVoltar = new ImageIcon("icons/voltar.png");
-		
+
 		buttonAddAlerta.setIcon(iconAdd);
 		buttonAlterAlerta.setIcon(iconAlter);
 		buttonDelAlerta.setIcon(iconDelete);
@@ -228,19 +225,18 @@ public class GerenciamentoAlertaVisao extends JInternalFrame {
 		buttonAddAlerta.setToolTipText("Adicionar Novo Alerta");
 		buttonAlterAlerta.setToolTipText("Alterar Alerta Existente");
 		buttonDelAlerta.setToolTipText("Deletar Alerta Existente");
-		
+
 		calendarDe = new JDateChooser();
 		calendarAte = new JDateChooser();
-		
+
 		calendarDe.setDate(new Date());
 
 		Calendar cal = Calendar.getInstance();
 
 		// Subtrai um mês da data atual
 		cal.add(Calendar.MONTH, 1);
-		
+
 		calendarAte.setDate(cal.getTime());
-		
 	}
 
 	// metodo responsavel por montar o painel
@@ -252,11 +248,11 @@ public class GerenciamentoAlertaVisao extends JInternalFrame {
 
 		CellConstraints cc = new CellConstraints();
 
-		builder.add(barraRolagem, cc.xywh(2, 4, 8, 7));
-		
+		builder.add(barraRolagem, cc.xywh(2, 4, 9, 7));
+
 		builder.addLabel("De:", cc.xy(2, 2));
 		builder.add(calendarDe, cc.xy(4, 2));
-		
+
 		builder.addLabel("Ate:", cc.xy(6, 2));
 		builder.add(calendarAte, cc.xy(8, 2));
 
@@ -269,15 +265,17 @@ public class GerenciamentoAlertaVisao extends JInternalFrame {
 	}
 
 	public void atualizaTabela() {
-		Date de = calendarDe.getDate();
-		Date ate = calendarAte.getDate();
-		
-		alertas = controller.getAlertas(emailUsuario, de, ate);
-		
-		for(AlertaVO a : alertas)
+		buttonAlterAlerta.setEnabled(false);
+		buttonDelAlerta.setEnabled(false);
+
+		alertaModelListener.limpaDados();
+
+		alertas = controller.getAlertas(emailUsuario, calendarDe.getDate(), calendarAte.getDate());
+
+		for (AlertaVO a : alertas)
 			alertaModelListener.addRow(a);
 	}
-	
+
 	private void adicionarAlerta() {
 		AdicionarAlertaVisao a = new AdicionarAlertaVisao(GerenciamentoAlertaVisao.this, controller, emailUsuario);
 		a.setBounds(0, 0, 350, 400);
@@ -290,40 +288,40 @@ public class GerenciamentoAlertaVisao extends JInternalFrame {
 		a.setVisible(true);
 		a.setPosicao();
 	}
-	
+
 	private void alterarAlerta() {
-//		AlterarAlertaVisao a = new AlterarAlertaVisao(GerenciamentoAlertaVisao.this, controller, bancos.get(table.getSelectedRow()));
-//		a.setBounds(0, 0, 350, 400);
-//		a.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//		a.setClosable(true);
-//		a.getContentPane().setBackground(backgroundTelas);
-//		this.setVisible(false);
-//
-//		desktop.add(a);
-//		a.setVisible(true);
-//		a.setPosicao();		
+		AlterarAlertaVisao a = new AlterarAlertaVisao(GerenciamentoAlertaVisao.this, controller,
+				alertas.get(table.getSelectedRow()));
+		a.setBounds(0, 0, 350, 400);
+		a.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		a.setClosable(true);
+		a.getContentPane().setBackground(backgroundTelas);
+		this.setVisible(false);
+
+		desktop.add(a);
+		a.setVisible(true);
+		a.setPosicao();
 	}
-	
+
 	private void deletarAlerta() {
-//		int opc = JOptionPane.showConfirmDialog(GerenciamentoAlertaVisao.this, "Tem certeza que deseja excluir o Alerta?\nAs Movimentações associadas serão deletadas", "", JOptionPane.WARNING_MESSAGE);
-//    	
-//    	if(opc == 0) {
-//    		int codigoAlerta = bancos.get(table.getSelectedRow()).getCodigo();
-//    		
-//    		controller.atualizaValoresMeta(emailUsuario);
-//    		controller.atualizaValoresQuadro(emailUsuario);
-//    		
-//    		controller.delMovimentacaoAlerta(emailUsuario, codigoAlerta);
-//    		if(controller.delAlerta(codigoAlerta)) {
-//    			JOptionPane.showMessageDialog(GerenciamentoAlertaVisao.this, "Alerta deletada com sucesso", "", JOptionPane.INFORMATION_MESSAGE);
-//    		}else {
-//    			JOptionPane.showMessageDialog(GerenciamentoAlertaVisao.this, "Erro ao deletar Alerta", "", JOptionPane.ERROR_MESSAGE);
-//    		}
-//    	}
-//    	
-//    	atualizaTabela();
+		int opc = JOptionPane.showConfirmDialog(GerenciamentoAlertaVisao.this,
+				"Tem certeza que deseja excluir o Alerta?", "", JOptionPane.WARNING_MESSAGE);
+
+		if (opc == 0) {
+			int codigoAlerta = alertas.get(table.getSelectedRow()).getCodigo();
+
+			if (controller.delAlerta(codigoAlerta)) {
+				JOptionPane.showMessageDialog(GerenciamentoAlertaVisao.this, "Alerta deletado com sucesso", "",
+						JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(GerenciamentoAlertaVisao.this, "Erro ao deletar Alerta", "",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		}
+
+		atualizaTabela();
 	}
-	
+
 	private void voltar() {
 		this.dispose();
 	}
