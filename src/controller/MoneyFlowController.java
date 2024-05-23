@@ -14,6 +14,7 @@ public class MoneyFlowController {
 	private MetaDAO metaDAO;
 	private CategoriaDAO categoriaDAO;
 	private UsuarioDAO usuarioDAO;
+	private AlertaDAO alertaDAO;
 
 	
 	public MoneyFlowController() {
@@ -23,6 +24,7 @@ public class MoneyFlowController {
 		categoriaDAO = new CategoriaDAO();
 		usuarioDAO = new UsuarioDAO();
 		movimentacaoDAO = new MovimentacaoDAO();
+		alertaDAO = new AlertaDAO();
 	}
 	
 	public ArrayList<QuadroVO> getQuadros(String emailUsuario, String pesquisa, String filtro) {
@@ -195,5 +197,21 @@ public class MoneyFlowController {
 
 	public ArrayList<RelatorioCategoriaVO> getRelatorioCategoria(String emailUsuario, Date de, Date ate) {
 		return usuarioDAO.getRelatorioCategoria(emailUsuario, de, ate);
+	}
+
+	public ArrayList<AlertaVO> getAlertas(String emailUsuario, Date de, Date ate) {
+		return alertaDAO.getAlertas(emailUsuario, de, ate);
+	}
+
+	public int addAlerta(String emailUsuario, AlertaVO alertaVO) {
+		return alertaDAO.addAlerta(emailUsuario, alertaVO);
+	}
+
+	public boolean delAlerta(int codigoAlerta) {
+		return alertaDAO.delAlerta(codigoAlerta);
+	}
+
+	public boolean alterAlerta(AlertaVO alertaVO) {
+		return alertaDAO.alterAlerta(alertaVO);
 	}
 }

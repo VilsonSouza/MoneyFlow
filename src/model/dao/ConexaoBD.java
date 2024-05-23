@@ -13,6 +13,10 @@ public class ConexaoBD {
 	}
 
 	public static Connection getConexaoBD() {
+		
+		String url = "jdbc:mysql://root:eijZESbYYOgzcSRQKnUeKkiLrQzPbRRu@roundhouse.proxy.rlwy.net:57749/railway"; 
+		String user = "root"; 
+		String password = "eijZESbYYOgzcSRQKnUeKkiLrQzPbRRu";
 
 		
 		if( conexao == null)
@@ -23,6 +27,7 @@ public class ConexaoBD {
 //				Class.forName("org.hsqldb.jdbcDriver"); //carrega o driver
 				Class.forName("com.mysql.cj.jdbc.Driver"); //carrega o driver
 					
+//				conexao = DriverManager.getConnection(url,user,password);
 				conexao = DriverManager.getConnection("jdbc:mysql://localhost/moneyflow","root","");
 //				conexao = DriverManager.getConnection("jdbc:mysql://localhost/moneyflow?useTimezone=true&serverTimezone=UTC","root","");
 				

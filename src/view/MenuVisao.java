@@ -33,6 +33,7 @@ public class MenuVisao extends JFrame {
 	private JMenuItem bancoItem;
 	private JMenuItem perfilItem;
 	private JMenuItem categoriaItem;
+	private JMenuItem alertaItem;
 	private JMenuItem metaItem;
 	private JMenuItem finalizarItem;
 	private JMenuItem deslogarItem;
@@ -66,7 +67,11 @@ public class MenuVisao extends JFrame {
 		}
 
 		inicializaComponentes();
+		
+		gerenciarAlertas();
 
+		financeiroMenu.add(alertaItem);
+		financeiroMenu.addSeparator();
 		financeiroMenu.add(quadroItem);
 		financeiroMenu.addSeparator();
 		financeiroMenu.add(categoriaItem);
@@ -92,6 +97,13 @@ public class MenuVisao extends JFrame {
 		barra.add(aplicacaoMenu);
 
 		setJMenuBar(barra);
+		
+		alertaItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				gerenciarAlertas();
+			}
+		});
 
 		quadroItem.addActionListener(new ActionListener() {
 			@Override
@@ -166,6 +178,7 @@ public class MenuVisao extends JFrame {
 		aplicacaoMenu = new JMenu("Aplicação");
 		relatoriosMenu = new JMenu("Relatórios");
 
+		alertaItem = new JMenuItem("Gerenciar Alertas");
 		quadroItem = new JMenuItem("Gerenciar Quadros");
 		bancoItem = new JMenuItem("Gerenciar Bancos");
 		categoriaItem = new JMenuItem("Gerenciar Categorias");
@@ -187,8 +200,21 @@ public class MenuVisao extends JFrame {
 				g.drawImage(im, 0, 0, this);
 			}
 		};
+		
 
-		add(desktop);
+		add(desktop);		
+	}
+	
+	private void gerenciarAlertas() {
+		GerenciamentoAlertaVisao2 g = new GerenciamentoAlertaVisao2(desktop, backgroundTelas, controller, email);
+		g.setBounds(0, 0, getTamanhoTela().width-40, getTamanhoTela().height-100);
+		g.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		g.setClosable(true);
+		g.getContentPane().setBackground(backgroundTelas);
+
+		desktop.add(g);
+		g.setVisible(true);
+		g.setPosicao();
 	}
 
 	private void gerenciarQuadros() {
